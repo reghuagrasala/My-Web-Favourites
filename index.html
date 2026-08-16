@@ -473,29 +473,22 @@ body {
   -webkit-backdrop-filter: blur(14px);
 }
 
-@media (max-width: 900px) {
-  .folders {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .greeting {
-    font-size: 34px;
-  }
-
-  .title {
-    font-size: 23px;
-  }
-}
-
 @media (max-width: 580px) {
-  .folders {
-    grid-template-columns: 1fr;
-    width: 92%;
-  }
+    .folders {
+        grid-template-columns: repeat(3, 1fr);
+        width: 96%;
+        gap: 7px;
+    }
 
-  .search-area {
-    width: 88% !important;
-  }
+    .folder {
+        min-height: 88px;
+        padding: 8px 7px;
+        border-radius: 14px;
+    }
+
+    .search-area {
+        width: 92% !important;
+    }
 }
 </style>
 </head>
