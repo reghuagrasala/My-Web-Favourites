@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Web Favourites</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --text: #17202a;
+    --muted: rgba(23,32,42,.62);
+    --glass: rgba(255,255,255,.34);
+    --glass-border: rgba(255,255,255,.48);
+    --shadow: rgba(35,55,75,.12);
+}
+
+html, body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "Segoe UI",
+        sans-serif;
+    color: var(--text);
+    overflow-x: hidden;
+
+    background:
+        radial-gradient(circle at 15% 15%, rgba(255,255,255,.75), transparent 30%),
+        radial-gradient(circle at 85% 20%, rgba(170,220,245,.42), transparent 32%),
+        radial-gradient(circle at 50% 100%, rgba(190,230,215,.38), transparent 38%),
+        linear-gradient(135deg, #dcecf4, #eef5f4 48%, #dce9ef);
+
+    transition: background 2s ease;
+}
+
+/* subtle wallpaper texture */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .16;
+    background:
+        radial-gradient(circle at 30% 30%, white 0 1px, transparent 1px),
+        radial-gradient(circle at 70% 60%, white 0 1px, transparent 1px);
+    background-size: 80px 80px, 110px 110px;
+}
+
+.page {
+    min-height: 100vh;
+    padding: 28px 34px 112px;
+    position: relative;
+}
+
+/* TOP */
+.top {
+    text-align: center;
+    margin: 0 auto 25px;
+}
+
+.date {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: .2px;
+}
+
+.greeting {
+    margin-top: 4px;
+    font-size: clamp(27px, 4vw, 43px);
+    font-weight: 650;
+    letter-spacing: -1.3px;
+}
+
+.title {
+    margin-top: 4px;
+    font-size: clamp(18px, 2.4vw, 24px);
+    font-weight: 600;
+    color: rgba(23,32,42,.72);
+}
+
+/* FOLDERS */
+.folders {
+    width: min(1080px, 100%);
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+}
+
+.folder {
+    position: relative;
+    min-height: 86px;
+    padding: 9px 12px 8px;
+
+    border-radius: 21px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--folder-light),
+            rgba(255,255,255,.25)
+        );
+
+    border: 1px solid var(--glass-border);
+
+    box-shadow:
+        0 8px 25px var(--shadow),
+        inset 0 1px 0 rgba(255,255,255,.55);
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        background .3s ease;
+
+    cursor: pointer;
+}
+
+.folder:hover {
+    transform: translateY(-3px) scale(1.01);
+
+    box-shadow:
+        0 13px 32px rgba(35,55,75,.17),
+        inset 0 1px 0 rgba(255,255,255,.65);
+}
+
+.folder-icon {
+    width: 36px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+
+    font-size: 25px;
+}
+
+.folder-name {
+    margin-top: 6px;
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: -.15px;
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 9px;
+}
+
+.site {
+    width: 27px;
+    height: 27px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: rgba(255,255,255,.48);
+    border: 1px solid rgba(255,255,255,.38);
+
+    box-shadow: 0 2px 7px rgba(30,50,70,.08);
+
+    overflow: hidden;
+
+    text-decoration: none;
+    color: #273442;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.site img {
+    width: 17px;
+    height: 17px;
+    object-fit: contain;
+}
+
+.site:hover {
+    background: rgba(255,255,255,.75);
+}
+
+/* Different ambient folder colours */
+
+.folder:nth-child(1)  { --folder-light: rgba(180,205,235,.45); }
+.folder:nth-child(2)  { --folder-light: rgba(210,225,190,.43); }
+.folder:nth-child(3)  { --folder-light: rgba(150,215,190,.46); }
+.folder:nth-child(4)  { --folder-light: rgba(185,205,225,.44); }
+
+.folder:nth-child(5)  { --folder-light: rgba(185,200,240,.45); }
+.folder:nth-child(6)  { --folder-light: rgba(210,190,235,.45); }
+.folder:nth-child(7)  { --folder-light: rgba(220,205,180,.43); }
+.folder:nth-child(8)  { --folder-light: rgba(225,205,175,.45); }
+
+.folder:nth-child(9)  { --folder-light: rgba(190,215,195,.46); }
+.folder:nth-child(10) { --folder-light: rgba(195,210,230,.45); }
+.folder:nth-child(11) { --folder-light: rgba(175,210,225,.45); }
+.folder:nth-child(12) { --folder-light: rgba(220,195,215,.45); }
+
+.folder:nth-child(13) { --folder-light: rgba(205,205,190,.45); }
+.folder:nth-child(14) { --folder-light: rgba(215,205,225,.45); }
+
+/* SEARCH */
+.search-area {
+    position: fixed;
+    z-index: 20;
+
+    left: 50%;
+    bottom: 23px;
+
+    width: min(610px, calc(100% - 40px));
+
+    transform: translateX(-50%);
+}
+
+.search-shell {
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 19px;
+
+    border-radius: 27px;
+
+    background: rgba(255,255,255,.48);
+    border: 1px solid rgba(255,255,255,.62);
+
+    box-shadow:
+        0 9px 30px rgba(30,50,70,.16),
+        inset 0 1px 0 rgba(255,255,255,.65);
+
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+}
+
+.search-icon {
+    font-size: 18px;
+    opacity: .55;
+    margin-right: 9px;
+}
+
+.search {
+    width: 100%;
+    height: 100%;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    font: inherit;
+    font-size: 16px;
+    color: var(--text);
+}
+
+.search::placeholder {
+    color: rgba(23,32,42,.52);
+}
+
+/* TABLET */
+@media (max-width: 850px) {
+    .folders {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .page {
+        padding-left: 22px;
+        padding-right: 22px;
+    }
+}
+
+/* PHONE */
+@media (max-width: 580px) {
+    .page {
+        padding: 22px 12px 100px;
+    }
+
+    .top {
+        margin-bottom: 19px;
+    }
+
+    .date {
+        font-size: 13px;
+    }
+
+    .greeting {
+        font-size: 29px;
+    }
+
+    .title {
+        font-size: 18px;
+    }
+
+    .folders {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .folder {
+        min-height: 101px;
+        padding: 12px;
+        border-radius: 18px;
+    }
+
+    .folder-icon {
+        font-size: 22px;
+    }
+
+    .folder-name {
+        font-size: 14px;
+    }
+
+    .site {
+        width: 25px;
+        height: 25px;
+    }
+
+    .search-area {
+        bottom: 16px;
+        width: calc(100% - 26px);
+    }
+
+    .search-shell {
+        height: 49px;
+    }
+/* MOBILE FOLDER OPEN/CLOSE */
+.folder .links {
+    display: none;
+}
+
+.folder.open .links {
+    display: flex;
+}
+
+.folder {
+    cursor: pointer;
+}
+
+.folder.open {
+    min-height: 100px;
+}}/* --- Safari-style Favourite Wallpaper --- */
+
+body {
+  background: linear-gradient(135deg, #78b6d0, #9ccfc5, #78aebc) !important;
+  color: #17202a;
+}
+
+.page {
+  min-height: 100vh;
+  padding-bottom: 95px;
+}
+
+.top {
+  padding-top: 18px;
+}
+
+#date {
+  font-size: 17px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.greeting {
+  font-size: 44px;
+  font-weight: 750;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-size: 27px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.folders {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  width: min(1160px, 92%);
+  margin: 0 auto;
+}
+
+.folder {
+  min-height: 125px;
+  padding: 17px;
+  border-radius: 23px;
+  background: rgba(255,255,255,0.28);
+  border: 1px solid rgba(255,255,255,0.58);
+  box-shadow: 0 5px 18px rgba(35,55,75,0.10);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform .2s ease, background .2s ease;
+}
+
+.folder:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.36);
+}
+
+.folder-icon {
+  font-size: 27px;
+  margin-bottom: 6px;
+}
+
+.folder-name {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.links {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.links a {
+  width: 31px;
+  height: 31px;
+  border-radius: 9px;
+  background: rgba(255,255,255,0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.65);
+}
+
+.links img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.search-area {
+  position: fixed !important;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 20px !important;
+  width: min(650px, 70%) !important;
+  z-index: 100;
+}
+
+.search-shell {
+  height: 55px !important;
+  border-radius: 30px !important;
+  background: rgba(255,255,255,0.70) !important;
+  border: 1px solid rgba(255,255,255,0.75);
+  box-shadow: 0 5px 20px rgba(30,50,70,0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+@media (max-width: 900px) {
+  .folders {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .greeting {
+    font-size: 34px;
+  }
+
+  .title {
+    font-size: 23px;
+  }
+}
+
+@media (max-width: 580px) {
+  .folders {
+    grid-template-columns: 1fr;
+    width: 92%;
+  }
+
+  .search-area {
+    width: 88% !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+    <header class="top">
+    <div class="date" id="date"></div>
+    <div class="greeting" id="greeting"></div>
+    <div class="title">My Web Favourites</div>
+</header>
+
+
+    <main class="folders" id="folders">
+
+        <div class="folder">
+            <div class="folder-icon">📰</div>
+            <div class="folder-name">News</div>
+            <div class="links">
+                <a class="site" href="https://www.bbc.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=bbc.com">
+                </a>
+                <a class="site" href="https://www.reuters.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=reuters.com">
+                </a>
+                <a class="site" href="https://www.thehindu.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=thehindu.com">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">🇮🇳</div>
+            <div class="folder-name">India</div>
+            <div class="links">
+                <a class="site" href="https://www.india.gov.in" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=india.gov.in">
+                </a>
+                <a class="site" href="https://www.pib.gov.in" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=pib.gov.in">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">🌴</div>
+            <div class="folder-name">Kerala</div>
+            <div class="links">
+                <a class="site" href="https://kerala.gov.in" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=kerala.gov.in">
+                </a>
+                <a class="site" href="https://www.mathrubhumi.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=mathrubhumi.com">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">🌍</div>
+            <div class="folder-name">World</div>
+            <div class="links">
+                <a class="site" href="https://www.reuters.com/world/" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=reuters.com">
+                </a>
+                <a class="site" href="https://apnews.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=apnews.com">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">💻</div>
+            <div class="folder-name">Technology</div>
+            <div class="links">
+                <a class="site" href="https://www.theverge.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=theverge.com">
+                </a>
+                <a class="site" href="https://techcrunch.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=techcrunch.com">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">🤖</div>
+            <div class="folder-name">AI</div>
+            <div class="links">
+                <a class="site" href="https://chatgpt.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=chatgpt.com">
+                </a>
+                <a class="site" href="https://www.anthropic.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=anthropic.com">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">🏛️</div>
+            <div class="folder-name">Government</div>
+            <div class="links">
+                <a class="site" href="https://www.india.gov.in" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=india.gov.in">
+                </a>
+                <a class="site" href="https://www.kerala.gov.in" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=kerala.gov.in">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">💰</div>
+            <div class="folder-name">Finance</div>
+            <div class="links">
+                <a class="site" href="https://www.rbi.org.in" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=rbi.org.in">
+                </a>
+                <a class="site" href="https://www.moneycontrol.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=moneycontrol.com">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">🏏</div>
+            <div class="folder-name">Sports</div>
+            <div class="links">
+                <a class="site" href="https://www.espncricinfo.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=espncricinfo.com">
+                </a>
+                <a class="site" href="https://www.fifa.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=fifa.com">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">📚</div>
+            <div class="folder-name">Education</div>
+            <div class="links">
+                <a class="site" href="https://www.wikipedia.org" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=wikipedia.org">
+                </a>
+                <a class="site" href="https://scholar.google.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=scholar.google.com">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">✈️</div>
+            <div class="folder-name">Travel</div>
+            <div class="links">
+                <a class="site" href="https://www.google.com/maps" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=google.com">
+                </a>
+                <a class="site" href="https://www.booking.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=booking.com">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">🎬</div>
+            <div class="folder-name">Entertainment</div>
+            <div class="links">
+                <a class="site" href="https://www.youtube.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=youtube.com">
+                </a>
+                <a class="site" href="https://www.netflix.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=netflix.com">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">🛠️</div>
+            <div class="folder-name">Tools</div>
+            <div class="links">
+                <a class="site" href="https://github.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=github.com">
+                </a>
+                <a class="site" href="https://drive.google.com" target="_blank">
+                    <img src="https://www.google.com/s2/favicons?domain=drive.google.com">
+                </a>
+            </div>
+        </div>
+
+        <div class="folder">
+            <div class="folder-icon">⭐</div>
+            <div class="folder-name">Other Favourites</div>
+            <div class="links">
+                <a class="site" href="#" onclick="return false;">★</a>
+                <a class="site" href="#" onclick="return false;">+</a>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<div class="search-area">
+    <div class="search-shell">
+        <span class="search-icon">⌕</span>
+        <input
+            id="search"
+            class="search"
+            type="search"
+            placeholder="Search the web"
+            autocomplete="off"
+        >
+    </div>
+</div>
+
+<script>
+function updateWallpaper() {
+
+    const now = new Date();
+
+    document.getElementById("date").textContent =
+        now.toLocaleDateString("en-IN", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+
+    const hour = now.getHours();
+
+    let greeting;
+    let background;
+
+    if (hour >= 5 && hour < 12) {
+
+        greeting = "Good Morning";
+
+        background = `
+            radial-gradient(circle at 18% 12%, rgba(170,220,245,.35), transparent 28%),
+            radial-gradient(circle at 82% 25%, rgba(110,190,185,.28), transparent 32%),
+            linear-gradient(135deg, #8db8cf 0%, #a9cfc9 48%, #739fae 100%)
+        `;
+
+    } else if (hour >= 12 && hour < 17) {
+
+        greeting = "Good Afternoon";
+
+        background = `
+            radial-gradient(circle at 18% 18%, rgba(120,190,225,.30), transparent 30%),
+            radial-gradient(circle at 82% 30%, rgba(80,170,170,.28), transparent 34%),
+            linear-gradient(135deg, #6f9fbd 0%, #8db9b6 50%, #5d899e 100%)
+        `;
+
+    } else if (hour >= 17 && hour < 21) {
+
+        greeting = "Good Evening";
+
+        background = `
+            radial-gradient(circle at 20% 18%, rgba(150,160,220,.30), transparent 30%),
+            radial-gradient(circle at 82% 25%, rgba(170,125,190,.26), transparent 34%),
+            linear-gradient(135deg, #627fa5 0%, #837caa 52%, #536f8d 100%)
+        `;
+
+    } else {
+
+        greeting = "Good Night";
+
+        background = `
+            radial-gradient(circle at 20% 20%, rgba(90,125,170,.25), transparent 30%),
+            radial-gradient(circle at 80% 25%, rgba(110,105,160,.22), transparent 34%),
+            linear-gradient(135deg, #344d6a 0%, #465777 52%, #293f59 100%)
+        `;
+    }
+
+    document.getElementById("greeting").textContent = greeting;
+    document.body.style.background = background;
+}
+
+updateWallpaper();
+
+setInterval(updateWallpaper, 60000);
+
+document.getElementById("search").addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter" && this.value.trim()) {
+
+        const query = encodeURIComponent(this.value.trim());
+
+        window.location.href =
+            "https://www.google.com/search?q=" + query;
+    }
+});
+</script>
+<script src="bookmarks.js"></script>
+  <script>
+async function loadSafariBookmarks() {
+    const container = document.getElementById("folders");
+
+    try {
+        const response = await fetch("Bookmarks.html");
+        const html = await response.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+
+        const root = doc.querySelector('h3[id="BookmarksBar"]');
+
+        if (!root) {
+            console.error("Safari Favourites folder not found");
+            return;
+        }
+
+        const bookmarkData = [];
+
+        function readFolder(folderTitle, dl) {
+            const bookmarks = [];
+            let node = dl.firstElementChild;
+
+            while (node) {
+                if (node.tagName === "DT") {
+
+                    const h3 = node.querySelector(":scope > H3");
+
+                    if (h3) {
+                        const childDL = node.querySelector(":scope > DL");
+
+                        if (childDL) {
+                            readFolder(h3.textContent.trim(), childDL);
+                        }
+                    }
+
+                    const link = node.querySelector(":scope > A");
+
+                    if (link) {
+                        bookmarks.push({
+                            title: link.textContent.trim(),
+                            url: link.href
+                        });
+                    }
+                }
+
+                node = node.nextElementSibling;
+            }
+
+            bookmarkData.push({
+                name: folderTitle,
+                links: bookmarks
+            });
+        }
+
+        const mainDL = root.nextElementSibling;
+
+        if (!mainDL) return;
+
+        let node = mainDL.firstElementChild;
+
+        while (node) {
+            if (node.tagName === "DT") {
+                const folder = node.querySelector(":scope > H3");
+                const dl = node.querySelector(":scope > DL");
+
+                if (folder && dl) {
+                    readFolder(folder.textContent.trim(), dl);
+                }
+            }
+
+            node = node.nextElementSibling;
+        }
+
+        container.innerHTML = "";
+
+        bookmarkData.forEach(folder => {
+
+            const card = document.createElement("div");
+            card.className = "folder";
+
+            const icon = document.createElement("div");
+            icon.className = "folder-icon";
+            icon.textContent = "📁";
+
+            const name = document.createElement("div");
+            name.className = "folder-name";
+            name.textContent = folder.name;
+
+            const links = document.createElement("div");
+            links.className = "links";
+
+            folder.links.slice(0, 4).forEach(bookmark => {
+
+                const a = document.createElement("a");
+                a.className = "site";
+                a.href = bookmark.url;
+                a.target = "_blank";
+                a.title = bookmark.title;
+
+                const img = document.createElement("img");
+
+                try {
+                    img.src =
+                        "https://www.google.com/s2/favicons?domain=" +
+                        encodeURIComponent(new URL(bookmark.url).hostname);
+                } catch {
+                    img.style.display = "none";
+                }
+
+                a.appendChild(img);
+                links.appendChild(a);
+            });
+
+            card.appendChild(icon);
+            card.appendChild(name);
+            card.appendChild(links);
+
+            container.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error("Could not load Safari bookmarks:", error);
+    }
+}
+
+loadSafariBookmarks();
+</script>
+    <script>
+document.getElementById("folders").addEventListener("click", function(event) {
+    if (window.innerWidth > 580) return;
+
+    const link = event.target.closest("a");
+    if (link) return;
+
+    const folder = event.target.closest(".folder");
+    if (!folder) return;
+
+    document.querySelectorAll("#folders .folder.open").forEach(function(item) {
+        if (item !== folder) {
+            item.classList.remove("open");
+        }
+    });
+
+    folder.classList.toggle("open");
+});
+</script>         
+</body>
+</html>
