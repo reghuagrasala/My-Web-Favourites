@@ -1,4 +1,4 @@
-/* Local Safari bookmark importer. Imported bookmarks stay in this browser. */
+/* Local Safari bookmark importer + robust folder navigation. */
 (function () {
   "use strict";
   const STORAGE_KEY = "myWebFavourites.safariBookmarks.v1";
@@ -54,20 +54,54 @@
     }
   }
 
-  function addImportButton() {
+  function installNavigationCSS() {
+    if (document.getElementById("fixedFolderNavigationCSS")) return;
     const style = document.createElement("style");
-    style.textContent = ".home-view.hidden{display:none!important}.detail-view{display:none}.detail-view.active{display:flex!important}";
+    style.id = "fixedFolderNavigationCSS";
+    style.textContent = `
+      .home-view { flex: 0 0 auto !important; min-height: 0 !important; }
+      .folders-grid { flex: 0 0 auto !important; min-height: 0 !important; }
+      .home-view.hidden { display: none !important; }
+      .detail-view { display: none !important; }
+      .detail-view.active {
+        display: flex !important;
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: max(14px, env(safe-area-inset-top)) 14px max(20px, env(safe-area-inset-bottom)) !important;
+        overflow-y: auto !important;
+        z-index: 1000 !important;
+        background: transparent !important;
+      }
+      body:has(.detail-view.active) { overflow: hidden !important; }
+      body:has(.detail-view.active) .header,
+      body:has(.detail-view.active) .top-bar { display: none !important; }
+      .detail-view.active .detail-header { width: 100%; max-width: 920px; margin: 0 auto; }
+      .detail-view.active .links-grid { width: 100%; max-width: 920px; margin: 0 auto; padding-bottom: 30px; }
+      @media (min-width: 600px) {
+        .folders-grid { margin-bottom: 0 !important; padding-bottom: 10px !important; }
+      }
+    `;
     document.head.appendChild(style);
+  }
+
+  function addImportButton() {
     const top = document.querySelector(".top-bar, .top");
     if (!top || document.getElementById("localBookmarkImport")) return;
     const wrap = document.createElement("div");
     wrap.id = "localBookmarkImport";
-    wrap.style.cssText = "margin-top:12px;display:flex;justify-content:center;";
+    wrap.style.cssText = "display:flex;align-items:center;justify-content:center;";
+    if (top.classList.contains("top-bar")) wrap.style.marginLeft = "auto";
+    else wrap.style.marginTop = "12px";
 
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = stored ? "Change Bookmarks" : "Import Bookmarks";
-    button.style.cssText = "border:1px solid rgba(255,255,255,.72);border-radius:18px;padding:7px 14px;background:rgba(255,255,255,.62);backdrop-filter:blur(10px);cursor:pointer;font:inherit;font-size:13px;color:#17202a;";
+    button.className = "refresh-btn";
+    button.setAttribute("aria-label", button.textContent);
 
     const input = document.createElement("input");
     input.type = "file";
@@ -95,6 +129,11 @@
     top.appendChild(wrap);
   }
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", addImportButton);
-  else addImportButton();
+  function initialise() {
+    installNavigationCSS();
+    addImportButton();
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initialise);
+  else initialise();
 })();
