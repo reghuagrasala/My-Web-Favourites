@@ -100,21 +100,42 @@
       opacity: 0.9;
     }
 
-    .refresh-btn {
+    .management-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(0,0,0,0.12);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px;
+      padding: 2px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .management-btn {
       background: none;
       border: none;
       color: white;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
-      opacity: 0.85;
+      opacity: 0.9;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 4px;
-      padding: 6px 8px;
-      border-radius: 8px;
+      padding: 7px 9px;
+      border-radius: 9px;
+      white-space: nowrap;
     }
-    .refresh-btn:active { opacity: 1; background: rgba(255,255,255,0.1); }
+    .management-btn:active { opacity: 1; background: rgba(255,255,255,0.14); }
+    .management-btn + .management-btn { border-left: 1px solid rgba(255,255,255,0.10); border-radius: 0 9px 9px 0; }
+    .management-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .import-input { display: none; }
+    @media (max-width: 480px) {
+      .top-bar { padding-left: 2px; padding-right: 2px; gap: 6px; }
+      .favourites-label { font-size: 14px; }
+      .management-btn { font-size: 12px; padding: 6px 6px; gap: 3px; }
+      .management-btn svg { width: 13px; height: 13px; }
+    }
 
     /* Main grid of folders */
     .folders-grid {
@@ -476,39 +497,6 @@
 
     .home-view.hidden { display: none; }
     body.folder-open .search-bar { display: none !important; }
-
-
-    /* Responsive full-width folder layout — uses the available device width */
-    .home-view, .detail-view { width: 100%; max-width: none; }
-    .top-bar, .folders-grid, .sync-area { max-width: none; width: 100%; }
-    .folders-grid {
-      grid-template-columns: repeat(8, minmax(0, 1fr));
-      column-gap: clamp(8px, 1.8vw, 24px);
-      row-gap: clamp(14px, 2.2vh, 28px);
-      padding-left: clamp(4px, 1.2vw, 18px);
-      padding-right: clamp(4px, 1.2vw, 18px);
-    }
-
-    @media (max-width: 899px) {
-      .folders-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-    }
-
-    @media (max-width: 599px) {
-      .folders-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        column-gap: 6px;
-        row-gap: 14px;
-        padding-left: 2px;
-        padding-right: 2px;
-      }
-      .folder-icon { width: clamp(60px, 18vw, 72px); height: clamp(60px, 18vw, 72px); }
-      .folder-label { max-width: 22vw; }
-    }
-
-    @media (max-width: 380px) {
-      .folder-icon { width: 62px; height: 62px; }
-      .folder-label { max-width: 23vw; }
-    }
   </style>
 </head>
 <body>
@@ -523,10 +511,21 @@
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         Favourites
       </div>
-      <button class="refresh-btn" onclick="location.reload()">
-        Refresh
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-      </button>
+      <div class="management-actions" aria-label="Bookmark management">
+        <button class="management-btn" type="button" onclick="document.getElementById('importInput').click()" title="Import bookmarks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Import
+        </button>
+        <button class="management-btn" type="button" onclick="refreshBookmarks()" title="Refresh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+          Refresh
+        </button>
+        <button class="management-btn" type="button" onclick="exportBookmarks()" title="Export bookmarks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21V9"/><path d="m17 14-5-5-5 5"/><path d="M5 3h14"/></svg>
+          Export
+        </button>
+      </div>
+      <input class="import-input" id="importInput" type="file" accept=".html,.htm,.json,text/html,application/json" onchange="importBookmarks(this.files[0])" />
     </div>
 
     <div class="folders-grid" id="foldersGrid"></div>
@@ -561,7 +560,7 @@
 
   <script>
     // ===== BOOKMARKS DATA (from your export) =====
-    const BOOKMARKS = {
+    let BOOKMARKS = {
   "ഇന്നത്തെ വിശേഷം": [
     {
       "title": "തൃശ്ശൂരിലെ_ആഘോഷങ്ങൾ",
@@ -1620,6 +1619,105 @@
   ]
 };
 
+    // ===== IMPORT / REFRESH / EXPORT =====
+    const BOOKMARK_STORAGE_KEY = 'my-safari-favourites-v3';
+
+    function saveBookmarksLocally() {
+      try { localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(BOOKMARKS)); } catch(e) {}
+    }
+
+    function restoreBookmarksLocally() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(BOOKMARK_STORAGE_KEY) || 'null');
+        if (saved && typeof saved === 'object' && !Array.isArray(saved)) BOOKMARKS = saved;
+      } catch(e) {}
+    }
+
+    function parseImportedBookmarks(text, fileName) {
+      const trimmed = text.trim();
+      if (fileName.toLowerCase().endsWith('.json') || trimmed.startsWith('{')) {
+        const obj = JSON.parse(trimmed);
+        if (!obj || typeof obj !== 'object' || Array.isArray(obj)) throw new Error('Invalid bookmark JSON');
+        return obj;
+      }
+
+      const doc = new DOMParser().parseFromString(trimmed, 'text/html');
+      const result = {};
+      const root = doc.querySelector('dl');
+      if (!root) throw new Error('No bookmark list found');
+
+      let currentFolder = 'Imported';
+      const walk = (node) => {
+        for (const child of node.children) {
+          if (child.tagName === 'DT') {
+            const h3 = child.querySelector(':scope > h3');
+            const a = child.querySelector(':scope > a');
+            if (h3) {
+              currentFolder = h3.textContent.trim() || 'Imported';
+              if (!result[currentFolder]) result[currentFolder] = [];
+              const nested = child.querySelector(':scope > dl');
+              if (nested) walk(nested);
+            } else if (a && a.href) {
+              if (!result[currentFolder]) result[currentFolder] = [];
+              result[currentFolder].push({ title: a.textContent.trim() || a.href, url: a.href });
+            }
+          }
+          if (child.tagName === 'DL') walk(child);
+        }
+      };
+      walk(root);
+      if (!Object.keys(result).length) throw new Error('No bookmarks found');
+      return result;
+    }
+
+    function importBookmarks(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          BOOKMARKS = parseImportedBookmarks(String(reader.result || ''), file.name);
+          saveBookmarksLocally();
+          buildHome();
+          alert('Bookmarks imported successfully.');
+        } catch (e) {
+          alert('Could not import bookmarks. Please choose a Safari/HTML or JSON bookmark file.');
+        }
+        document.getElementById('importInput').value = '';
+      };
+      reader.readAsText(file);
+    }
+
+    function refreshBookmarks() {
+      location.reload();
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function exportBookmarks() {
+      const now = new Date().toISOString();
+      let html = '<!DOCTYPE NETSCAPE-Bookmark-file-1>\n';
+      html += '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">\n';
+      html += '<TITLE>My Safari Favourites</TITLE>\n<H1>My Safari Favourites</H1>\n<DL><p>\n';
+      Object.entries(BOOKMARKS).forEach(([folder, links]) => {
+        html += `    <DT><H3>${escapeHtml(folder)}</H3>\n    <DL><p>\n`;
+        (Array.isArray(links) ? links : []).forEach(link => {
+          if (link && link.url) html += `        <DT><A HREF="${escapeHtml(link.url)}">${escapeHtml(link.title || link.url)}</A>\n`;
+        });
+        html += '    </DL><p>\n';
+      });
+      html += '</DL><p>\n';
+      const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `My-Safari-Favourites-${now.slice(0,10)}.html`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+
     // Folder display order & short labels matching screenshots
     const FOLDER_ORDER = [
       { key: "ഇന്നത്തെ വിശേഷം", label: "ഇന്നത്തെ വിശേഷം" },
@@ -1852,6 +1950,7 @@
       } else apply(10.3,76.4);
     }
 
+    restoreBookmarksLocally();
     updateDate();
     buildHome();
     applyDarkPreference();
