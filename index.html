@@ -139,8 +139,9 @@
 
     /* Main grid of folders — fill the available viewport; no bottom search bar. */
     .home-view {
-      height: 100dvh;
-      min-height: 100vh;
+      flex: 1 1 auto;
+      height: auto;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -150,33 +151,42 @@
     .folders-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      grid-template-rows: repeat(4, minmax(0, 1fr));
-      gap: 6px 10px;
+      grid-auto-rows: minmax(0, 1fr);
+      gap: 8px 10px;
       max-width: 1120px;
       margin: 0 auto;
       width: 100%;
       flex: 1 1 auto;
       min-height: 0;
-      padding: 4px 8px 10px;
+      padding: 6px 8px 10px;
       align-items: center;
+      align-content: stretch;
       overflow: hidden;
     }
 
     /* On phones keep the folder area completely above the search bar. */
     @media (max-width: 599px) {
       html, body { height: 100%; overflow: hidden; }
-      .home-view {
+      body {
         height: 100dvh;
         min-height: 100dvh;
-        max-height: 100dvh;
-        padding-bottom: env(safe-area-inset-bottom, 0px);
+        padding-bottom: 0;
       }
+
+      .home-view {
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        flex: 1 1 auto;
+        padding-bottom: 0;
+      }
+
       .folders-grid {
-        grid-template-rows: repeat(4, minmax(0, 1fr));
+        grid-auto-rows: minmax(0, 1fr);
         flex: 1 1 auto;
         min-height: 0;
         overflow: hidden;
-        padding: 4px 6px 8px;
+        padding: 4px 6px 6px;
         gap: 4px 8px;
       }
       /* detail/folder view fills screen, no blue strip */
@@ -202,22 +212,51 @@
     @media (min-width: 900px) {
       .folders-grid {
         grid-template-columns: repeat(8, minmax(0, 1fr));
-        grid-template-rows: repeat(2, minmax(0, 1fr));
-        gap: 8px 24px;
-        max-width: 1120px;
-        padding: 8px 12px 12px;
+        gap: 10px 28px;
+        max-width: 1420px;
+        padding: 8px 18px 14px;
       }
 
       .folder-icon {
-        width: 84px;
-        height: 84px;
-        border-radius: 18px;
-        padding: 8px;
+        width: 104px;
+        height: 104px;
+        border-radius: 20px;
+        padding: 9px;
       }
 
       .folder-label {
-        font-size: 12.5px;
-        max-width: 100px;
+        font-size: 14px;
+        max-width: 130px;
+        line-height: 1.28;
+      }
+
+      .mini-icon {
+        border-radius: 7px;
+        font-size: 13px;
+      }
+
+      .mini-icon .fallback-letter,
+      .mini-icon span {
+        font-size: 13px;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .folders-grid {
+        max-width: 1520px;
+        gap: 12px 34px;
+      }
+
+      .folder-icon {
+        width: 116px;
+        height: 116px;
+        border-radius: 22px;
+        padding: 10px;
+      }
+
+      .folder-label {
+        font-size: 15px;
+        max-width: 145px;
       }
     }
 
@@ -1724,13 +1763,20 @@
       return (t[0] || '?').toUpperCase();
     }
 
-    // Build folder tiles
+    // Build folder tiles. Keep the preferred order first, then show every
+    // additional imported folder so imports never silently hide folders.
     function buildHome() {
       const grid = document.getElementById('foldersGrid');
       grid.innerHTML = '';
 
-      FOLDER_ORDER.forEach(f => {
-        const links = BOOKMARKS[f.key] || [];
+      const ordered = FOLDER_ORDER.filter(f => Object.prototype.hasOwnProperty.call(BOOKMARKS, f.key));
+      const known = new Set(ordered.map(f => f.key));
+      const extra = Object.keys(BOOKMARKS)
+        .filter(key => !known.has(key))
+        .map(key => ({ key, label: key }));
+
+      [...ordered, ...extra].forEach(f => {
+        const links = Array.isArray(BOOKMARKS[f.key]) ? BOOKMARKS[f.key] : [];
         const tile = document.createElement('div');
         tile.className = 'folder-tile';
         tile.onclick = () => openFolder(f.key, f.label);
