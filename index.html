@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Favorites">
+<meta name="theme-color" content="#0a0a0a">
+<meta property="og:title" content="Favorites - Ulaa-like Private">
+<meta property="og:description" content="My private favorites - all links stay inside like Ulaa - no app jumps">
+<meta property="og:type" content="website">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="https://www.google.com/s2/favicons?domain=favorites.app&sz=180">
+<link rel="stylesheet" href="./css/style.css">
+<title>Favorites - Ulaa Mode</title>
+</head>
+<body>
+<div class="app">
+<div class="top">
+<div class="title">Favorites</div>
+<div class="caps">
+<button class="cap" id="importCap">Import</button>
+<button class="cap" id="editCap">Edit</button>
+<button class="cap" id="refreshCap">Refresh</button>
+<button class="cap" id="shareCap">Share</button>
+<button class="cap" id="a2hsCap">Add to Home</button>
+</div>
+<div class="priv">Ulaa Mode • All links stay inside • No app jumps • Full-screen</div>
+</div>
+<main id="grid"></main>
+</div>
+<div id="drop">Drop bookmarks.html here</div>
+<div id="toast"></div>
+
+<div class="modal" id="viewModal"><div class="mbox"><div class="mhead"><span id="viewTitle"></span><div><button class="cap" id="shareFolderBtn" style="padding:5px 10px;font-size:12px">Share</button> <span id="viewClose" style="cursor:pointer;margin-left:8px">✕</span></div></div>
+<div style="display:flex;gap:6px;padding:8px 12px;border-bottom:1px solid #eee">
+<button class="cap" id="waShare" style="padding:6px 12px;font-size:12px;background:#25D366;color:white">WhatsApp</button>
+<button class="cap" id="tgShare" style="padding:6px 12px;font-size:12px;background:#0088cc;color:white">Telegram</button>
+<button class="cap" id="fbShare" style="padding:6px 12px;font-size:12px;background:#1877F2;color:white">Facebook</button>
+</div>
+<div class="mbody" id="viewList"></div></div></div>
+
+<div class="modal" id="editModal"><div class="mbox"><div class="mhead"><span>Edit Folder</span><span id="editClose" style="cursor:pointer">✕</span></div><div class="mbody">
+<input id="editFolderName" class="input-folder" placeholder="Folder name">
+<div id="editList"></div>
+<button class="cap" id="addLinkBtn" style="background:#eee;color:#222;width:fit-content">+ Add Link</button>
+<div style="display:flex;gap:8px;padding-top:10px"><button class="cap active" id="saveEditBtn" style="flex:1">Save</button><button class="cap" id="cancelEditBtn" style="flex:1;background:#eee;color:#222">Cancel</button></div>
+</div></div></div>
+
+<input type="file" id="fileInput" accept=".html,.htm,.json" style="display:none">
+
+<div id="browserView">
+<div class="bvHeader">
+<div class="bvLeft">
+<button class="bvBtn primary" id="bvBack">‹ Back</button>
+<button class="bvBtn" id="bvCloseLeft">✕ Close</button>
+</div>
+<div class="bvTitle" id="bvTitle">Loading...</div>
+<div class="bvRight">
+<button class="bvBtn" id="bvOpenNew">↗ Browser</button>
+<button class="bvBtn primary" id="bvClose">✕</button>
+</div>
+</div>
+<div class="bvNotice" id="bvNotice">Ulaa Mode: YouTube, Google, Instagram stay INSIDE this app — will NOT open native apps</div>
+<iframe class="bvFrame" id="bvFrame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<script src="./js/app.js"></script>
+<script>
+// Register service worker (separate file for better iOS support)
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').then(()=>console.log('SW registered')).catch(e=>console.log('SW failed',e));
+}
+</script>
+</body>
+</html>
