@@ -1,77 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#121316">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Favorites">
-<meta name="theme-color" content="#0a0a0a">
-<meta property="og:title" content="Favorites - Ulaa-like Private">
-<meta property="og:description" content="My private favorites - all links stay inside like Ulaa - no app jumps">
-<meta property="og:type" content="website">
-<link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="https://www.google.com/s2/favicons?domain=favorites.app&sz=180">
-<link rel="stylesheet" href="./css/style.css">
-<title>Favorites - Ulaa Mode</title>
+<meta name="apple-mobile-web-app-title" content="My Safari Favourites">
+<title>My Safari Favourites</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Arial,sans-serif}body{background:linear-gradient(135deg,#1776bd,#59b3da);color:#fff}.app{height:100dvh;min-height:100%;display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) max(12px,2vw) env(safe-area-inset-bottom,0px)}.title{font-size:clamp(24px,3vw,34px);font-weight:700;text-align:center;padding:14px 0 10px}.top-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:4px 0 12px}.favourites-label{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600}.favourites-label svg{width:18px;height:18px}.top-actions{display:flex;align-items:center;gap:2px}.refresh-btn{border:0;background:transparent;color:#fff;font-size:13px;font-weight:600;padding:7px 9px;border-radius:8px;cursor:pointer}.refresh-btn:active{background:rgba(255,255,255,.12)}.folders-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:clamp(14px,2.2vw,28px) clamp(8px,2vw,24px);width:100%;max-width:none;margin:0 auto;padding:4px 0 22px;flex:1;align-content:start;overflow:auto;-webkit-overflow-scrolling:touch}.folder-tile{display:flex;flex-direction:column;align-items:center;color:#fff;cursor:pointer;min-width:0}.folder-tile:active{transform:scale(.95)}.folder-icon{width:clamp(62px,7vw,84px);height:clamp(62px,7vw,84px);border-radius:18px;background:rgba(20,40,65,.55);border:1px solid rgba(255,255,255,.16);box-shadow:0 4px 16px rgba(0,0,0,.18);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;padding:7px;overflow:hidden;margin-bottom:7px}.mini-icon{border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}.mini-icon img{width:100%;height:100%;object-fit:cover}.fallback-letter{color:#333;font-size:14px;font-weight:700}.folder-label{font-size:clamp(10px,1.15vw,13px);line-height:1.1;font-weight:600;text-align:center;max-width:120px;word-break:break-word}.search-area{padding:8px 0 10px;display:flex;justify-content:center;flex-shrink:0}.search-form{display:flex;align-items:center;width:min(560px,94vw);height:50px;background:rgba(20,30,45,.7);border:1px solid rgba(255,255,255,.18);border-radius:25px;padding:0 6px 0 14px;box-shadow:0 5px 18px rgba(0,0,0,.22)}.search-form svg{width:19px;flex:none;opacity:.75}.search-form input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#fff;font-size:15px;padding:0 10px}.search-form input::placeholder{color:#d9e1e8}.search-go{border:0;border-radius:20px;padding:9px 17px;font-weight:700;background:#5d6670;color:#fff;cursor:pointer}.detail-view{display:none;position:fixed;inset:0;z-index:50;background:#f7f7f7;color:#222;padding:env(safe-area-inset-top,0px) 12px env(safe-area-inset-bottom,0px);overflow:auto}.detail-view.active{display:block}.detail-header{height:54px;display:flex;align-items:center;justify-content:space-between;gap:8px}.back-btn,.theme-btn{border:0;background:transparent;color:inherit;padding:8px;cursor:pointer}.detail-title{font-size:18px;font-weight:700;text-align:center;flex:1}.links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:20px 10px;padding:10px 2px 30px}.link-tile{text-align:center;cursor:pointer}.link-icon{width:62px;height:62px;margin:0 auto 7px;border-radius:15px;background:#fff;box-shadow:0 2px 9px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;overflow:hidden}.link-icon img{width:100%;height:100%;object-fit:cover}.link-label{font-size:11px;line-height:1.15;word-break:break-word}.dark-mode{background:#121316;color:#fff}.bookmark-modal{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}.bookmark-modal[hidden]{display:none}.bookmark-modal-box{width:min(760px,100%);max-height:min(86dvh,760px);overflow:auto;background:#fff;color:#222;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.35);padding:16px;-webkit-overflow-scrolling:touch}.bookmark-modal-head{display:flex;align-items:center;justify-content:space-between;font-size:18px;margin-bottom:8px}.bookmark-modal-head button{border:0;background:#eee;border-radius:50%;width:32px;height:32px;cursor:pointer}.bookmark-help{font-size:13px;line-height:1.4;margin:0 0 12px;color:#555}.bookmark-actions{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}.bookmark-actions button,.add-folder,.editor-save,.add-link,.remove-folder{border:1px solid #ddd;background:#f5f5f5;color:#222;border-radius:9px;padding:8px 11px;font-size:13px;cursor:pointer}.bookmark-actions .danger{color:#a00}.bookmark-status{font-size:12px;color:#555;min-height:18px;margin:4px 0 10px}.bookmark-editor{display:flex;flex-direction:column;gap:10px}.edit-folder{border:1px solid #ddd;border-radius:12px;padding:10px;background:#fafafa}.edit-folder-head{display:flex;gap:7px;align-items:center;margin-bottom:8px}.edit-folder-name{flex:1;min-width:0;font-weight:600}.edit-folder input{box-sizing:border-box;border:1px solid #ccc;border-radius:7px;padding:7px;font-size:13px}.edit-links{display:flex;flex-direction:column;gap:6px}.edit-link-row{display:grid;grid-template-columns:1fr 1.5fr auto;gap:6px}.remove-link{border:0;background:#eee;border-radius:7px;cursor:pointer}.add-link{margin-top:8px}.add-folder{margin-top:10px}.editor-save{margin-top:10px;background:#1677d2;color:#fff;border-color:#1677d2;width:100%}@media(max-width:600px){.app{padding-left:8px;padding-right:8px}.title{padding-top:9px}.folders-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 5px;padding-bottom:8px}.folder-icon{width:clamp(58px,17vw,72px);height:clamp(58px,17vw,72px);padding:6px;border-radius:15px}.folder-label{font-size:10px;max-width:82px}.bookmark-modal{padding:10px;align-items:flex-end}.bookmark-modal-box{max-height:90dvh;border-radius:18px 18px 0 0;padding:13px}.bookmark-actions button{flex:1 1 auto}.edit-link-row{grid-template-columns:1fr auto}.edit-link-url{grid-column:1/-1}.edit-folder-head{align-items:stretch;flex-direction:column}}@media(min-width:601px) and (max-width:1100px){.folders-grid{grid-template-columns:repeat(6,minmax(0,1fr))}}@media(min-width:1101px){.folders-grid{grid-template-columns:repeat(8,minmax(0,1fr))}}
+</style>
 </head>
 <body>
-<div class="app">
-<div class="top">
-<div class="title">Favorites</div>
-<div class="caps">
-<button class="cap" id="importCap">Import</button>
-<button class="cap" id="editCap">Edit</button>
-<button class="cap" id="refreshCap">Refresh</button>
-<button class="cap" id="shareCap">Share</button>
-<button class="cap" id="a2hsCap">Add to Home</button>
+<div class="app" id="homeView">
+<div class="title" id="dateDisplay">My Safari Favourites</div>
+<div class="top-bar"><div class="favourites-label"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Favourites</div><div class="top-actions"><button class="refresh-btn" id="manageBtn" type="button">Manage</button><button class="refresh-btn" onclick="location.reload()">Refresh ↻</button></div></div>
+<div class="folders-grid" id="foldersGrid"></div>
+<div class="search-area"><form class="search-form" id="searchForm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="search" id="searchInput" placeholder="Search or enter website" autocomplete="off"><button class="search-go" type="submit">Go</button></form></div>
 </div>
-<div class="priv">Ulaa Mode • All links stay inside • No app jumps • Full-screen</div>
-</div>
-<main id="grid"></main>
-</div>
-<div id="drop">Drop bookmarks.html here</div>
-<div id="toast"></div>
-
-<div class="modal" id="viewModal"><div class="mbox"><div class="mhead"><span id="viewTitle"></span><div><button class="cap" id="shareFolderBtn" style="padding:5px 10px;font-size:12px">Share</button> <span id="viewClose" style="cursor:pointer;margin-left:8px">✕</span></div></div>
-<div style="display:flex;gap:6px;padding:8px 12px;border-bottom:1px solid #eee">
-<button class="cap" id="waShare" style="padding:6px 12px;font-size:12px;background:#25D366;color:white">WhatsApp</button>
-<button class="cap" id="tgShare" style="padding:6px 12px;font-size:12px;background:#0088cc;color:white">Telegram</button>
-<button class="cap" id="fbShare" style="padding:6px 12px;font-size:12px;background:#1877F2;color:white">Facebook</button>
-</div>
-<div class="mbody" id="viewList"></div></div></div>
-
-<div class="modal" id="editModal"><div class="mbox"><div class="mhead"><span>Edit Folder</span><span id="editClose" style="cursor:pointer">✕</span></div><div class="mbody">
-<input id="editFolderName" class="input-folder" placeholder="Folder name">
-<div id="editList"></div>
-<button class="cap" id="addLinkBtn" style="background:#eee;color:#222;width:fit-content">+ Add Link</button>
-<div style="display:flex;gap:8px;padding-top:10px"><button class="cap active" id="saveEditBtn" style="flex:1">Save</button><button class="cap" id="cancelEditBtn" style="flex:1;background:#eee;color:#222">Cancel</button></div>
-</div></div></div>
-
-<input type="file" id="fileInput" accept=".html,.htm,.json" style="display:none">
-
-<div id="browserView">
-<div class="bvHeader">
-<div class="bvLeft">
-<button class="bvBtn primary" id="bvBack">‹ Back</button>
-<button class="bvBtn" id="bvCloseLeft">✕ Close</button>
-</div>
-<div class="bvTitle" id="bvTitle">Loading...</div>
-<div class="bvRight">
-<button class="bvBtn" id="bvOpenNew">↗ Browser</button>
-<button class="bvBtn primary" id="bvClose">✕</button>
-</div>
-</div>
-<div class="bvNotice" id="bvNotice">Ulaa Mode: YouTube, Google, Instagram stay INSIDE this app — will NOT open native apps</div>
-<iframe class="bvFrame" id="bvFrame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-</div>
-
-<script src="./js/app.js"></script>
+<input type="file" id="bookmarkFileInput" accept=".html,.htm" hidden>
+<div class="bookmark-modal" id="bookmarkModal" hidden><div class="bookmark-modal-box"><div class="bookmark-modal-head"><strong>Bookmark Manager</strong><button type="button" id="closeBookmarkModal">✕</button></div><p class="bookmark-help">Import an updated Safari <b>bookmarks.html</b>, edit links, save them on this device, or export a backup.</p><div class="bookmark-actions"><button type="button" id="importBookmarksBtn">Import</button><button type="button" id="editBookmarksBtn">Edit</button><button type="button" id="saveBookmarksBtn">Save locally</button><button type="button" id="exportBookmarksBtn">Export</button><button type="button" id="resetBookmarksBtn" class="danger">Reset to default</button></div><div id="bookmarkStatus" class="bookmark-status"></div><div id="bookmarkEditor" class="bookmark-editor" hidden></div></div></div>
+<div class="detail-view" id="detailView"><div class="detail-header"><button class="back-btn" onclick="showHome()">‹ Back</button><div class="detail-title" id="detailTitle"></div><button class="theme-btn" onclick="toggleDarkMode()">☾</button></div><div class="links-grid" id="linksGrid"></div></div>
 <script>
-// Register service worker (separate file for better iOS support)
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').then(()=>console.log('SW registered')).catch(e=>console.log('SW failed',e));
-}
+const DEFAULT_BOOKMARKS = {
+  "My Favourites": [
+    {"title":"Google","url":"https://www.google.com/"},
+    {"title":"WhatsApp Web","url":"https://web.whatsapp.com/"},
+    {"title":"GitHub","url":"https://github.com/"}
+  ]
+};
+const FOLDER_ORDER=[];
+const BOOKMARK_STORAGE_KEY='my-safari-favourites-v2';
+let BOOKMARKS=loadLocalBookmarks()||cloneBookmarks(DEFAULT_BOOKMARKS);
+function cloneBookmarks(d){return JSON.parse(JSON.stringify(d||{}))}
+function loadLocalBookmarks(){try{const r=localStorage.getItem(BOOKMARK_STORAGE_KEY);return r?JSON.parse(r):null}catch(e){return null}}
+function saveLocalBookmarks(show=true){try{localStorage.setItem(BOOKMARK_STORAGE_KEY,JSON.stringify(BOOKMARKS));if(show)setBookmarkStatus('Saved on this device.');return true}catch(e){setBookmarkStatus('Could not save locally.');return false}}
+function setBookmarkStatus(t){const e=document.getElementById('bookmarkStatus');if(e)e.textContent=t}
+function currentFolderOrder(){return Object.keys(BOOKMARKS).map(k=>({key:k,label:k}))}
+function getHostname(url){try{return new URL(url).hostname.replace(/^www\./,'')}catch(e){return ''}}
+function imageSources(url){const h=getHostname(url);if(!h)return[];return[`https://www.google.com/s2/favicons?domain=${h}&sz=128`,`https://icons.duckduckgo.com/ip3/${h}.ico`,`https://${h}/favicon.ico`]}
+function firstLetter(t){return(String(t).replace(/[^a-zA-Z0-9\u0D00-\u0D7F]/g,'')[0]||'?').toUpperCase()}
+function makeFaviconImg(url){const s=imageSources(url),l=firstLetter(getHostname(url)||url);if(!s.length)return`<span class="fallback-letter">${l}</span>`;return`<img src="${s[0]}" alt="" onerror="this.onerror=null;this.src='${s[1]||''}'" loading="lazy"><span class="fallback-letter" style="display:none">${l}</span>`}
+function buildHome(){const g=document.getElementById('foldersGrid');g.innerHTML='';currentFolderOrder().forEach(f=>{const links=BOOKMARKS[f.key]||[],tile=document.createElement('div');tile.className='folder-tile';tile.onclick=()=>openFolder(f.key,f.label);let h='';for(let i=0;i<4;i++)h+=links[i]?`<div class="mini-icon">${makeFaviconImg(links[i].url)}</div>`:'<div class="mini-icon"><span>•</span></div>';tile.innerHTML=`<div class="folder-icon">${h}</div><div class="folder-label">${f.label}</div>`;g.appendChild(tile)})}
+function openFolder(k,l){document.getElementById('homeView').style.display='none';document.getElementById('detailView').classList.add('active');document.getElementById('detailTitle').textContent=l;const g=document.getElementById('linksGrid');g.innerHTML='';(BOOKMARKS[k]||[]).forEach(link=>{const t=document.createElement('div');t.className='link-tile';t.innerHTML=`<div class="link-icon">${makeFaviconImg(link.url)}</div><div class="link-label">${link.title}</div>`;t.onclick=()=>openExternal(link.url);g.appendChild(t)})}
+function showHome(){document.getElementById('homeView').style.display='flex';document.getElementById('detailView').classList.remove('active')}
+function openExternal(u){try{u=new URL(u).toString()}catch(e){}window.open(u,'_blank','noopener,noreferrer')}
+function toggleDarkMode(){document.getElementById('detailView').classList.toggle('dark-mode')}
+function escapeHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function parseSafariBookmarks(html){const doc=new DOMParser().parseFromString(html,'text/html'),root=doc.querySelector('dl');if(!root)throw new Error('No Safari/Netscape bookmark list was found.');const out={};const clean=v=>String(v||'').replace(/\s+/g,' ').trim();function walk(dl,folder){let current=folder;Array.from(dl.children).forEach(n=>{if(n.tagName!=='DT')return;const h=n.querySelector(':scope > h3'),a=n.querySelector(':scope > a');if(h){current=clean(h.textContent)||'Untitled Folder';if(!out[current])out[current]=[];const child=n.querySelector(':scope > dl');if(child)walk(child,current)}else if(a&&a.href){const f=current||'Imported Bookmarks';if(!out[f])out[f]=[];out[f].push({title:clean(a.textContent)||a.href,url:a.href})}})}walk(root,'Imported Bookmarks');if(!Object.keys(out).length)throw new Error('No bookmarks were found.');return out}
+function exportBookmarksHtml(){const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');let out='<!DOCTYPE NETSCAPE-Bookmark-file-1>\n<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">\n<TITLE>Bookmarks</TITLE>\n<H1>Bookmarks</H1>\n<DL><p>\n';currentFolderOrder().forEach(f=>{out+=`<DT><H3>${esc(f.label)}</H3>\n<DL><p>\n`;(BOOKMARKS[f.key]||[]).forEach(l=>out+=`<DT><A HREF="${esc(l.url)}">${esc(l.title)}</A>\n`);out+='</DL><p>\n'});out+='</DL><p>\n';const a=document.createElement('a'),u=URL.createObjectURL(new Blob([out],{type:'text/html;charset=utf-8'}));a.href=u;a.download='bookmarks.html';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);setBookmarkStatus('Exported bookmarks.html.')}
+function openBookmarkManager(){document.getElementById('bookmarkModal').hidden=false;document.getElementById('bookmarkEditor').hidden=true;setBookmarkStatus(`${currentFolderOrder().length} folders loaded.`)}
+function closeBookmarkManager(){document.getElementById('bookmarkModal').hidden=true;document.getElementById('bookmarkEditor').hidden=true}
+function addEditLinkRow(parent,title,url){const r=document.createElement('div');r.className='edit-link-row';r.innerHTML=`<input class="edit-link-title" placeholder="Link name" value="${escapeHtml(title)}"><input class="edit-link-url" placeholder="https://example.com" value="${escapeHtml(url)}"><button type="button" class="remove-link">✕</button>`;r.querySelector('.remove-link').onclick=()=>r.remove();parent.appendChild(r)}
+function renderBookmarkEditor(){const e=document.getElementById('bookmarkEditor');e.hidden=false;e.innerHTML='';const wrap=document.createElement('div');Object.keys(BOOKMARKS).forEach(folder=>{const s=document.createElement('section');s.className='edit-folder';s.innerHTML=`<div class="edit-folder-head"><input class="edit-folder-name" value="${escapeHtml(folder)}"><button type="button" class="remove-folder">Delete folder</button></div><div class="edit-links"></div><button type="button" class="add-link">+ Add link</button>`;const le=s.querySelector('.edit-links');(BOOKMARKS[folder]||[]).forEach(l=>addEditLinkRow(le,l.title,l.url));s.querySelector('.remove-folder').onclick=()=>s.remove();s.querySelector('.add-link').onclick=()=>addEditLinkRow(le,'','');wrap.appendChild(s)});const af=document.createElement('button');af.type='button';af.className='add-folder';af.textContent='+ Add folder';af.onclick=()=>{const s=document.createElement('section');s.className='edit-folder';s.innerHTML='<div class="edit-folder-head"><input class="edit-folder-name" placeholder="Folder name"><button type="button" class="remove-folder">Delete folder</button></div><div class="edit-links"></div><button type="button" class="add-link">+ Add link</button>';const le=s.querySelector('.edit-links');s.querySelector('.remove-folder').onclick=()=>s.remove();s.querySelector('.add-link').onclick=()=>addEditLinkRow(le,'','');wrap.appendChild(s)};e.appendChild(wrap);e.appendChild(af);const sv=document.createElement('button');sv.type='button';sv.className='editor-save';sv.textContent='Save changes';sv.onclick=saveEditorChanges;e.appendChild(sv)}
+function saveEditorChanges(){const n={};document.querySelectorAll('#bookmarkEditor .edit-folder').forEach(s=>{const name=s.querySelector('.edit-folder-name').value.trim();if(!name)return;const links=[];s.querySelectorAll('.edit-link-row').forEach(r=>{const title=r.querySelector('.edit-link-title').value.trim(),url=r.querySelector('.edit-link-url').value.trim();if(url)links.push({title:title||url,url})});n[name]=links});if(!Object.keys(n).length){setBookmarkStatus('Keep at least one named folder.');return}BOOKMARKS=n;saveLocalBookmarks(false);buildHome();closeBookmarkManager();alert('Bookmarks saved on this device.')}
+document.getElementById('manageBtn').onclick=openBookmarkManager;document.getElementById('closeBookmarkModal').onclick=closeBookmarkManager;document.getElementById('importBookmarksBtn').onclick=()=>document.getElementById('bookmarkFileInput').click();document.getElementById('bookmarkFileInput').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{BOOKMARKS=parseSafariBookmarks(await f.text());saveLocalBookmarks(false);buildHome();setBookmarkStatus(`Imported ${Object.keys(BOOKMARKS).length} folders and saved them locally.`)}catch(err){setBookmarkStatus('Import failed: '+(err.message||'invalid bookmarks file'))}e.target.value=''};document.getElementById('editBookmarksBtn').onclick=renderBookmarkEditor;document.getElementById('saveBookmarksBtn').onclick=()=>saveLocalBookmarks(true);document.getElementById('exportBookmarksBtn').onclick=exportBookmarksHtml;document.getElementById('resetBookmarksBtn').onclick=()=>{if(confirm('Reset to the bundled default bookmarks?')){BOOKMARKS=cloneBookmarks(DEFAULT_BOOKMARKS);saveLocalBookmarks(false);buildHome();setBookmarkStatus('Reset to default bookmarks.')}};document.getElementById('bookmarkModal').onclick=e=>{if(e.target.id==='bookmarkModal')closeBookmarkManager()};document.getElementById('searchForm').onsubmit=e=>{e.preventDefault();const q=document.getElementById('searchInput').value.trim();if(!q)return;openExternal(/^(https?:\/\/|www\.)/i.test(q)?(q.startsWith('http')?q:'https://'+q):'https://www.google.com/search?q='+encodeURIComponent(q))};document.getElementById('dateDisplay').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});buildHome();
 </script>
 </body>
 </html>
