@@ -476,6 +476,39 @@
 
     .home-view.hidden { display: none; }
     body.folder-open .search-bar { display: none !important; }
+
+
+    /* Responsive full-width folder layout — uses the available device width */
+    .home-view, .detail-view { width: 100%; max-width: none; }
+    .top-bar, .folders-grid, .sync-area { max-width: none; width: 100%; }
+    .folders-grid {
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      column-gap: clamp(8px, 1.8vw, 24px);
+      row-gap: clamp(14px, 2.2vh, 28px);
+      padding-left: clamp(4px, 1.2vw, 18px);
+      padding-right: clamp(4px, 1.2vw, 18px);
+    }
+
+    @media (max-width: 899px) {
+      .folders-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 599px) {
+      .folders-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        column-gap: 6px;
+        row-gap: 14px;
+        padding-left: 2px;
+        padding-right: 2px;
+      }
+      .folder-icon { width: clamp(60px, 18vw, 72px); height: clamp(60px, 18vw, 72px); }
+      .folder-label { max-width: 22vw; }
+    }
+
+    @media (max-width: 380px) {
+      .folder-icon { width: 62px; height: 62px; }
+      .folder-label { max-width: 23vw; }
+    }
   </style>
 </head>
 <body>
