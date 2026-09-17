@@ -538,3 +538,34 @@ html, body {
 .folders-grid {
   grid-template-rows: repeat(var(--folder-rows, 1), minmax(0, 1fr));
 }
+
+/* Folder-view touch-safe header and independent link scrolling */
+@media (max-width: 599px) {
+  .folder-view {
+    padding-top: max(28px, calc(env(safe-area-inset-top) + 24px));
+  }
+
+  .folder-header {
+    position: relative;
+    z-index: 20;
+    min-height: 62px;
+    padding-top: 4px;
+    padding-bottom: 10px;
+  }
+
+  .folder-back,
+  .folder-header button,
+  .folder-header a {
+    position: relative;
+    z-index: 30;
+    touch-action: manipulation;
+  }
+
+  .folder-content {
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
+  }
+}

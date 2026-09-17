@@ -10,7 +10,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <meta name="apple-mobile-web-app-title" content="My Safari Favourites">
   <meta name="application-name" content="My Safari Favourites">
-  <link rel="stylesheet" href="css/style.css?v=20260917">
+  <link rel="stylesheet" href="css/style.css?v=20260917-folderfix">
   
 </head>
 <body>
@@ -82,19 +82,17 @@
     function parseImportedBookmarks(text, fileName) {
       const trimmed = text.trim();
 
+      // JSON format: accept either {folder:[links]} or {folders:[{name,links}]}.
       if (fileName.toLowerCase().endsWith('.json') || trimmed.startsWith('{')) {
         const obj = JSON.parse(trimmed);
         if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
           throw new Error('Invalid bookmark JSON');
         }
-
-        const source = (obj.folders && Array.isArray(obj.folders))
-          ? Object.fromEntries(obj.folders.map(f => [String(f.name || 'Imported'), f.links || []]))
-          : obj;
-
         const out = {};
-        Object.entries(source).forEach(([folder, links]) => {
-          const name = uniqueFolderName(folder, out);
+        Object.entries(obj.folders && Array.isArray(obj.folders) ? Object.fromEntries(
+          obj.folders.map(f => [String(f.name || 'Imported'), f.links || []])
+        ) : obj).forEach(([folder, links]) => {
+          const name = uniqueFolderName(String(folder || 'Imported'), out);
           out[name] = Array.isArray(links)
             ? links.filter(x => x && x.url).map(x => ({
                 title: String(x.title || x.url),
@@ -102,46 +100,70 @@
               }))
             : [];
         });
-
         if (!Object.keys(out).length) throw new Error('No folders found');
         return out;
       }
 
+      // Safari/Chrome/Edge/Firefox Netscape bookmark HTML.
       const doc = new DOMParser().parseFromString(trimmed, 'text/html');
       const root = doc.querySelector('dl');
       if (!root) throw new Error('No bookmark list found');
 
       const result = {};
-
-      function walkDL(dl, currentFolder = null) {
+      function walk(dl) {
+        // Only inspect direct DT children at each level, preserving folder hierarchy.
         for (const dt of Array.from(dl.children).filter(el => el.tagName === 'DT')) {
           const h3 = Array.from(dt.children).find(el => el.tagName === 'H3');
           const a = Array.from(dt.children).find(el => el.tagName === 'A');
-          const nested = Array.from(dt.children).find(el => el.tagName === 'DL');
 
           if (h3) {
-            // Every H3 folder in the imported bookmark file becomes one folder.
             const folderName = uniqueFolderName(h3.textContent.trim(), result);
             result[folderName] = [];
-            if (nested) walkDL(nested, folderName);
-          } else if (a && a.href) {
-            // A bookmark belongs to the nearest containing H3 folder.
-            if (!currentFolder) {
-              currentFolder = uniqueFolderName('Bookmarks', result);
-              if (!result[currentFolder]) result[currentFolder] = [];
+
+            // The nested DL immediately following this H3 is the folder's content.
+            const nested = Array.from(dt.children).find(el => el.tagName === 'DL');
+            if (nested) {
+              for (const child of Array.from(nested.children).filter(el => el.tagName === 'DT')) {
+                const childH3 = Array.from(child.children).find(el => el.tagName === 'H3');
+                const childA = Array.from(child.children).find(el => el.tagName === 'A');
+
+                if (childA && childA.href) {
+                  result[folderName].push({
+                    title: childA.textContent.trim() || childA.href,
+                    url: childA.href
+                  });
+                } else if (childH3) {
+                  // Process nested folder as its own folder, so folder count is exact.
+                  const childName = uniqueFolderName(childH3.textContent.trim(), result);
+                  result[childName] = [];
+                  const childDL = Array.from(child.children).find(el => el.tagName === 'DL');
+                  if (childDL) {
+                    for (const linkDT of Array.from(childDL.children).filter(el => el.tagName === 'DT')) {
+                      const linkA = Array.from(linkDT.children).find(el => el.tagName === 'A');
+                      if (linkA && linkA.href) {
+                        result[childName].push({
+                          title: linkA.textContent.trim() || linkA.href,
+                          url: linkA.href
+                        });
+                      }
+                    }
+                  }
+                }
+              }
             }
-            result[currentFolder].push({
+          } else if (a && a.href) {
+            // Root-level links are placed in one explicit folder.
+            const rootName = Object.keys(result).length ? Object.keys(result)[0] : uniqueFolderName('Bookmarks', result);
+            if (!result[rootName]) result[rootName] = [];
+            result[rootName].push({
               title: a.textContent.trim() || a.href,
               url: a.href
             });
-          } else if (nested) {
-            // Be tolerant of bookmark files with an unwrapped root DL.
-            walkDL(nested, currentFolder);
           }
         }
       }
 
-      walkDL(root);
+      walk(root);
 
       if (!Object.keys(result).length) throw new Error('No bookmarks found');
       return result;
