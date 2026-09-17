@@ -533,3 +533,8 @@ html, body {
     margin: 0;
   }
 }
+
+/* Data-driven folder grid */
+.folders-grid {
+  grid-template-rows: repeat(var(--folder-rows, 1), minmax(0, 1fr));
+}
