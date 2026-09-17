@@ -6,7 +6,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>My Safari Favourites</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+  <link rel="icon" href="apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="My Safari Favourites">
+  <meta name="application-name" content="My Safari Favourites">
   <link rel="stylesheet" href="css/style.css?v=20260917">
   
 </head>
@@ -1289,7 +1292,13 @@
       const folders = [...ordered, ...extra];
       const columns = window.matchMedia('(max-width: 599px)').matches ? 4
         : window.matchMedia('(max-width: 899px)').matches ? 6 : 8;
-      grid.style.setProperty('--folder-rows', Math.max(1, Math.ceil(folders.length / columns)));
+      const rows = Math.max(1, Math.ceil(folders.length / columns));
+      grid.style.setProperty('--folder-rows', rows);
+
+      // Adapt tile scale to the number of rows while keeping a comfortable
+      // minimum. This makes 14 folders, 15 folders, 20 folders, etc. all fit.
+      const compact = Math.max(0.68, Math.min(1, 2.2 / Math.sqrt(rows)));
+      grid.style.setProperty('--folder-scale', compact.toFixed(3));
 
       folders.forEach(f => {
         const links = Array.isArray(BOOKMARKS[f.key]) ? BOOKMARKS[f.key] : [];

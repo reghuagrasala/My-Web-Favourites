@@ -184,6 +184,16 @@
         padding: 4px 6px 6px;
         gap: 4px 8px;
       }
+
+      .folder-icon {
+        width: clamp(58px, calc(76px * var(--folder-scale, 1)), 86px);
+        height: clamp(58px, calc(76px * var(--folder-scale, 1)), 86px);
+      }
+
+      .folder-label {
+        font-size: clamp(9px, calc(11.5px * var(--folder-scale, 1)), 11.5px);
+        max-width: 92px;
+      }
       /* detail/folder view fills screen, no blue strip */
       .detail-view {
         position: fixed;
@@ -212,10 +222,10 @@
       }
 
       .folder-icon {
-        width: 128px;
-        height: 128px;
+        width: clamp(112px, calc(152px * var(--folder-scale, 1)), 176px);
+        height: clamp(88px, calc(116px * var(--folder-scale, 1)), 136px);
         border-radius: 20px;
-        padding: 9px;
+        padding: 10px;
       }
 
       .folder-label {
@@ -237,8 +247,8 @@
 
     @media (min-width: 1200px) {
       .folder-icon {
-        width: 128px;
-        height: 128px;
+        width: clamp(126px, calc(168px * var(--folder-scale, 1)), 196px);
+        height: clamp(96px, calc(126px * var(--folder-scale, 1)), 146px);
       }
       .folder-label {
         font-size: 14.5px;
@@ -253,10 +263,10 @@
       }
 
       .folder-icon {
-        width: 142px;
-        height: 142px;
+        width: clamp(136px, calc(184px * var(--folder-scale, 1)), 214px);
+        height: clamp(104px, calc(138px * var(--folder-scale, 1)), 158px);
         border-radius: 22px;
-        padding: 10px;
+        padding: 11px;
       }
 
       .folder-label {
@@ -278,8 +288,8 @@
     .folder-tile:active { transform: scale(0.94); }
 
     .folder-icon {
-      width: 72px;
-      height: 72px;
+      width: clamp(64px, calc(104px * var(--folder-scale, 1)), 152px);
+      height: clamp(64px, calc(92px * var(--folder-scale, 1)), 132px);
       border-radius: 16px;
       background: var(--tile-bg);
       backdrop-filter: blur(20px);
@@ -506,3 +516,20 @@
     .sync-info svg { flex-shrink: 0; opacity: 0.7; }
 
     .home-view.hidden { display: none; }
+
+/* Final viewport guard: the home screen owns the viewport on iPhone and desktop. */
+html, body {
+  width: 100%;
+  max-width: 100%;
+}
+@media (max-width: 599px) {
+  html, body {
+    min-height: 100%;
+    height: 100dvh;
+    background-attachment: scroll;
+  }
+  body {
+    padding-bottom: 0 !important;
+    margin: 0;
+  }
+}
