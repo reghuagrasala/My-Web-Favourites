@@ -1,0 +1,20 @@
+{
+  "name": "My Safari Favourites",
+  "short_name": "Favourites",
+  "description": "Personal Safari-style online bookmarks",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#1260a0",
+  "theme_color": "#1260a0",
+  "icons": [
+    {
+      "src": "./apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
