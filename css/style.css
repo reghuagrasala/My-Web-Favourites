@@ -625,12 +625,12 @@ html, body {
 
   .folders-grid {
     flex: 0 0 auto;
-    height: calc((var(--folder-rows, 1) * 135px) + ((var(--folder-rows, 1) - 1) * 17px) + 10px);
+    height: calc((var(--folder-rows, 1) * 250px) + ((var(--folder-rows, 1) - 1) * 25px) + 10px);
     min-height: 0;
     max-height: none;
-    grid-template-rows: repeat(var(--folder-rows, 1), 135px);
-    grid-auto-rows: 135px;
-    gap: 17px 8px;
+    grid-template-rows: repeat(var(--folder-rows, 1), 250px);
+    grid-auto-rows: 250px;
+    gap: 25px 8px;
     align-content: start;
     justify-content: stretch;
     padding: 10px 6px 0;
@@ -642,6 +642,7 @@ html, body {
 
   .folder-tile {
     min-height: 135px;
+    height: 135px;
     justify-content: flex-start;
   }
 }
