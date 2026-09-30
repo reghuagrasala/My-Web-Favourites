@@ -646,3 +646,98 @@ html, body {
     justify-content: flex-start;
   }
 }
+
+
+/* v20260930 — reliable 15-folder iPhone layout.
+   The home screen scrolls as one surface so no folder can be hidden by a
+   fixed grid height or a changing iOS viewport. */
+@media (max-width: 599px) {
+  html, body {
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    min-height: 100%;
+    min-height: 100dvh;
+    overflow: hidden;
+    padding: 0 !important;
+    margin: 0;
+  }
+
+  .home-view {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    min-height: 0;
+    max-height: none;
+    padding: env(safe-area-inset-top) 12px 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
+  .folders-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-rows: none !important;
+    grid-auto-rows: minmax(132px, auto) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    flex: none !important;
+    overflow: visible !important;
+    align-items: start !important;
+    align-content: start !important;
+    gap: 22px 8px !important;
+    padding: 8px 4px 28px !important;
+  }
+
+  .folder-tile {
+    min-height: 132px;
+    height: auto;
+    justify-content: flex-start;
+  }
+
+  .folder-icon {
+    width: clamp(62px, 19vw, 82px);
+    height: clamp(62px, 19vw, 82px);
+    margin-bottom: 7px;
+  }
+
+  .folder-label {
+    max-width: 92px;
+    font-size: clamp(10px, 2.9vw, 11.5px);
+    line-height: 1.22;
+  }
+
+  /* No separate bottom strip inside the PWA. */
+  .home-view::after {
+    display: none !important;
+  }
+}
+
+/* Desktop/tablet: keep every folder in the normal document/grid flow. */
+@media (min-width: 600px) {
+  .folders-grid {
+    grid-template-rows: none !important;
+    grid-auto-rows: minmax(150px, auto) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    align-content: start !important;
+  }
+}
+
+/* Standalone iPhone PWA: the app itself owns the bottom safe-area;
+   don't paint a separate toolbar-looking strip. */
+@media (display-mode: standalone) and (max-width: 599px) {
+  body {
+    padding-bottom: 0 !important;
+    background-color: #536f8a;
+  }
+
+  .home-view {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+}
