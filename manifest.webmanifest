@@ -4,11 +4,13 @@
   "description": "Personal Safari-style online bookmarks",
   "start_url": "./",
   "scope": "./",
-  "display": "fullscreen",
-  "display_override": ["fullscreen", "standalone"],
+  "display": "standalone",
+  "display_override": [
+    "standalone"
+  ],
   "orientation": "any",
-  "background_color": "#1260a0",
-  "theme_color": "#1260a0",
+  "background_color": "#536f8a",
+  "theme_color": "#536f8a",
   "icons": [
     {
       "src": "./apple-touch-icon.png",
