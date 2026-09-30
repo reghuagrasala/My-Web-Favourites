@@ -741,3 +741,91 @@ html, body {
     padding-bottom: env(safe-area-inset-bottom) !important;
   }
 }
+
+
+/* v20260930-static — fixed iPhone home screen.
+   All 15 folders remain visible in a fixed 4-column / 4-row layout.
+   The home screen itself does not scroll or shift with the iOS viewport. */
+@media (max-width: 599px) {
+  html, body {
+    width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden !important;
+  }
+
+  body {
+    padding: 0 !important;
+    margin: 0;
+  }
+
+  .home-view {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    min-height: 0;
+    max-height: none;
+    padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) 12px !important;
+    overflow: hidden !important;
+  }
+
+  .header {
+    flex: 0 0 auto;
+    padding: 12px 6px 4px !important;
+  }
+
+  .date {
+    font-size: clamp(1.25rem, 5vw, 1.6rem);
+    line-height: 1.15;
+  }
+
+  .top-bar {
+    flex: 0 0 auto;
+    padding: 7px 2px 8px !important;
+  }
+
+  .folders-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-rows: repeat(4, minmax(0, 1fr)) !important;
+    grid-auto-rows: auto !important;
+    height: auto !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    align-items: start !important;
+    align-content: stretch !important;
+    gap: 7px 6px !important;
+    padding: 4px 2px 0 !important;
+  }
+
+  .folder-tile {
+    min-height: 0 !important;
+    height: 100% !important;
+    justify-content: flex-start;
+  }
+
+  .folder-icon {
+    width: clamp(58px, 18vw, 74px) !important;
+    height: clamp(58px, 18vw, 74px) !important;
+    margin-bottom: 4px !important;
+    padding: 5px !important;
+    border-radius: 13px !important;
+  }
+
+  .folder-label {
+    max-width: 82px !important;
+    font-size: clamp(9px, 2.7vw, 11px) !important;
+    line-height: 1.12 !important;
+    -webkit-line-clamp: 2 !important;
+  }
+}
+
+/* Prevent the PWA from introducing any page-level movement. */
+@media (display-mode: standalone) and (max-width: 599px) {
+  html, body, .home-view, .folders-grid {
+    overflow: hidden !important;
+  }
+}
