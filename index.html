@@ -10,7 +10,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">\n  <link rel="manifest" href="manifest.webmanifest">
   <meta name="apple-mobile-web-app-title" content="My Safari Favourites">
   <meta name="application-name" content="My Safari Favourites">\n  <meta name="theme-color" content="#1260a0">
-  <link rel="stylesheet" href="css/style.css?v=20261001-static-v2">
+  <link rel="stylesheet" href="css/style.css?v=20261001-static-v3">
   
 </head>
 <body>
@@ -209,7 +209,7 @@
       return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    function exportBookmarks() {
+    async function exportBookmarks() {
       const now = new Date().toISOString();
       let html = '<!DOCTYPE NETSCAPE-Bookmark-file-1>\n';
       html += '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">\n';
@@ -222,14 +222,36 @@
         html += '    </DL><p>\n';
       });
       html += '</DL><p>\n';
+
+      const fileName = `My-Safari-Favourites-${now.slice(0,10)}.html`;
+      const file = new File([html], fileName, {type:'text/html'});
+
+      // iPhone/iPad: use the native Share Sheet so the exported bookmark
+      // file can be saved to Files or sent to another app.  This avoids
+      // opening the generated HTML in Quick Look as a preview.
+      if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'My Safari Favourites',
+            text: 'Safari bookmarks export'
+          });
+          return;
+        } catch (e) {
+          if (e && e.name === 'AbortError') return;
+        }
+      }
+
+      // Desktop/older browsers fallback: normal download.
       const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `My-Safari-Favourites-${now.slice(0,10)}.html`;
+      a.href = url;
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
       a.remove();
-      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
     // High-quality site icon + page-preview fallback.
