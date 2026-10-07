@@ -1098,3 +1098,61 @@ html.time-night {
     min-height: 100vh;
   }
 }
+
+/* v20261007-root-background — the remaining strip was the HTML root
+   background (#183a63), visible because iOS standalone can make the body
+   shorter than the physical screen. Paint the wallpaper on HTML itself
+   and make BODY transparent. This guarantees the bottom pixels use the
+   same wallpaper as the app instead of a separate blue band. */
+html,
+html.time-noon,
+html.time-morning,
+html.time-sunset,
+html.time-night {
+  background-attachment: fixed !important;
+}
+
+html {
+  background: linear-gradient(145deg,#050b18 0%,#0c1930 48%,#182d48 100%) !important;
+}
+
+html.time-morning {
+  background: linear-gradient(145deg,#536f8a 0%,#7e93a8 45%,#b4bdc7 100%) !important;
+}
+
+html.time-noon {
+  background: linear-gradient(145deg,#1260a0 0%,#2f86c1 48%,#78b9d6 100%) !important;
+}
+
+html.time-sunset {
+  background: linear-gradient(145deg,#385b82 0%,#c37a59 52%,#f0b46d 100%) !important;
+}
+
+html.time-night {
+  background: linear-gradient(145deg,#050b18 0%,#0c1930 48%,#182d48 100%) !important;
+}
+
+body {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Keep the existing readability overlay, but make it a true viewport layer. */
+body::before {
+  z-index: 0 !important;
+}
+
+/* App content stays above the viewport overlay. */
+.home-view,
+.detail-view {
+  position: relative;
+  z-index: 1;
+}
+
+/* The iPhone home view is already fixed; retain that geometry. */
+@media (display-mode: standalone) and (max-width: 599px) {
+  .home-view {
+    position: fixed !important;
+    z-index: 1 !important;
+  }
+}
