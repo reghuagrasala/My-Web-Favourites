@@ -917,3 +917,55 @@ html, body {
     padding-bottom: 0 !important;
   }
 }
+
+/* v20261007 — eliminate the iPhone bottom strip.
+   The screenshot showed the home surface ending at the small viewport
+   (~100px above the physical bottom). Use the dynamic viewport for the
+   fixed app shell so the complete iPhone screen is painted. */
+@media (max-width: 599px) {
+  html,
+  body {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  .home-view {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    padding-bottom: 0 !important;
+  }
+
+  .folders-grid {
+    height: auto !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    grid-template-rows: repeat(4, minmax(0, 1fr)) !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (display-mode: standalone) and (max-width: 599px) {
+  html,
+  body,
+  .home-view {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+  }
+
+  body {
+    padding-bottom: 0 !important;
+  }
+
+  .home-view {
+    padding-bottom: 0 !important;
+  }
+}
