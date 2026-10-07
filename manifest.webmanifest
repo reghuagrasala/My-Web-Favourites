@@ -2,7 +2,7 @@
   "name": "My Safari Favourites",
   "short_name": "Favourites",
   "description": "Personal Safari-style online bookmarks",
-  "start_url": "./",
+  "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
   "display_override": [
