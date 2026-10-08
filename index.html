@@ -419,40 +419,65 @@
       const grid = document.getElementById('foldersGrid');
       grid.innerHTML = '';
 
-      // Render exactly the folders present in BOOKMARKS, in imported order.
-      const folders = Object.keys(BOOKMARKS).map(key => ({ key, label: key }));
+      const folders = Object.keys(BOOKMARKS)
+        .filter(key => key !== HOME_BOOKMARKS_KEY)
+        .map(key => ({ key, label: key, type: 'folder' }));
+
+      const homeLinks = Array.isArray(BOOKMARKS[HOME_BOOKMARKS_KEY])
+        ? BOOKMARKS[HOME_BOOKMARKS_KEY].map((link, index) => ({
+            key: index, link, label: link.title || link.url, type: 'link'
+          }))
+        : [];
+
+      const items = folders.concat(homeLinks);
       const columns = window.matchMedia('(max-width: 599px)').matches ? 4
         : window.matchMedia('(max-width: 899px)').matches ? 6 : 8;
-      const rows = Math.max(1, Math.ceil(folders.length / columns));
+      const rows = Math.max(1, Math.ceil(items.length / columns));
       grid.style.setProperty('--folder-rows', rows);
 
-      // More folders => smaller tiles; fewer folders => larger tiles.
       const compact = folders.length
-        ? Math.max(0.68, Math.min(1, 2.2 / Math.sqrt(rows)))
-        : 1;
+        ? Math.max(0.68, Math.min(1, 2.2 / Math.sqrt(rows))) : 1;
       grid.style.setProperty('--folder-scale', compact.toFixed(3));
 
-      folders.forEach(f => {
-        const links = Array.isArray(BOOKMARKS[f.key]) ? BOOKMARKS[f.key] : [];
+      items.forEach(item => {
+        if (item.type === 'link') {
+          const tile = document.createElement('div');
+          tile.className = 'link-tile home-link-tile';
+          tile.setAttribute('role','link');
+          tile.setAttribute('tabindex','0');
+          tile.onclick = () => openExternal(item.link.url);
+          tile.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault(); openExternal(item.link.url);
+            }
+          });
+          tile.innerHTML = `
+            <div class="link-icon">${makeFaviconImg(item.link.url)}</div>
+            <div class="link-label">${escapeHtml(item.label)}</div>
+          `;
+          grid.appendChild(tile);
+          return;
+        }
+
+        const links = Array.isArray(BOOKMARKS[item.key]) ? BOOKMARKS[item.key] : [];
         const tile = document.createElement('div');
         tile.className = 'folder-tile';
-        tile.onclick = () => openFolder(f.key, f.label);
+        tile.onclick = () => openFolder(item.key, item.label);
 
         let miniHtml = '';
         for (let i = 0; i < 4; i++) {
-          if (links[i]) {
-            miniHtml += `<div class="mini-icon">${makeFaviconImg(links[i].url)}</div>`;
-          } else {
-            miniHtml += `<div class="mini-icon"><span>•</span></div>`;
-          }
+          miniHtml += links[i]
+            ? `<div class="mini-icon">${makeFaviconImg(links[i].url)}</div>`
+            : `<div class="mini-icon"><span>•</span></div>`;
         }
 
         tile.innerHTML = `
           <div class="folder-icon">${miniHtml}</div>
-          <div class="folder-label">${escapeHtml(f.label)}</div>
+          <div class="folder-label">${escapeHtml(item.label)}</div>
         `;
         grid.appendChild(tile);
       });
+
       upgradeFavicons(grid);
     }
 
