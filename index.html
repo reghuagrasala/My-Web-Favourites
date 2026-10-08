@@ -121,11 +121,30 @@
           const a = Array.from(dt.children).find(el => el.tagName === 'A');
 
           if (h3) {
-            const folderName = uniqueFolderName(h3.textContent.trim(), result);
+            const rawFolderName = h3.textContent.trim();
+            const isSafariFavorites = /^(favorites|favourites|safari favorites|safari favourites)$/i.test(rawFolderName);
+
+            // Safari's Favorites/Home Screen container is special: its links
+            // are the standalone tiles the user sees on Safari's start page.
+            // Do not create a "Favorites" folder in our PWA. Flatten all
+            // links anywhere inside that container into standalone bookmarks.
+            const nested = Array.from(dt.children).find(el => el.tagName === 'DL');
+            if (isSafariFavorites) {
+              if (nested) {
+                for (const el of Array.from(nested.querySelectorAll('a[href]'))) {
+                  homeLinks.push({
+                    title: el.textContent.trim() || el.href,
+                    url: el.href
+                  });
+                }
+              }
+              continue;
+            }
+
+            const folderName = uniqueFolderName(rawFolderName, result);
             result[folderName] = [];
 
             // The nested DL immediately following this H3 is the folder's content.
-            const nested = Array.from(dt.children).find(el => el.tagName === 'DL');
             if (nested) {
               for (const child of Array.from(nested.children).filter(el => el.tagName === 'DT')) {
                 const childH3 = Array.from(child.children).find(el => el.tagName === 'H3');
