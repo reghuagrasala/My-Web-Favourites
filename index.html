@@ -292,16 +292,15 @@
 
     function faviconCandidates(host) {
       return [
+        // Prefer the site's own high-resolution artwork.
         `https://${host}/apple-touch-icon.png`,
         `https://${host}/apple-touch-icon-precomposed.png`,
         `https://${host}/favicon.svg`,
         `https://${host}/favicon.png`,
         `https://${host}/favicon.ico`,
-        `https://favicon.run/favicon?domain=${encodeURIComponent(host)}&sz=128`,
-        `https://icon.horse/icon/${encodeURIComponent(host)}`,
-        `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=128`,
-        `https://icons.duckduckgo.com/ip3/${host}.ico`,
-        `https://favicon.yandex.net/favicon/${host}`
+        // Icon Horse deliberately provides a distinct fallback instead of
+        // Google's generic globe, so it is our final visual safety net.
+        `https://icon.horse/icon/${encodeURIComponent(host)}?size=128&fallback_text=${encodeURIComponent(firstLetter(host))}`
       ];
     }
 
@@ -402,7 +401,7 @@
       }
 
       // Favicon.so found only a generic/default result. Try genuine site
-      // assets and independent services before falling back to a letter.
+      // assets first, then Icon Horse's non-globe fallback.
       tryFaviconSource(img, faviconCandidates(host), 0, host, fallback);
     }
 
