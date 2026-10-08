@@ -372,6 +372,14 @@
       padding: 12px 10px 24px;
       box-shadow: 0 8px 40px rgba(0,0,0,0.4);
     }
+    /* Keep the bookmark/link experience dark by default. */
+    .detail-view,
+    .detail-view.dark-mode {
+      color-scheme: dark;
+      background: #0f0f0f;
+      color: #f2f2f2;
+    }
+
     .detail-view.dark-mode .link-icon {
       background: rgba(255,255,255,0.12);
       border-color: rgba(255,255,255,0.15);
