@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-title" content="My Safari Favourites">
   <meta name="application-name" content="My Safari Favourites">
 <meta name="theme-color" content="#1260a0">
-  <link rel="stylesheet" href="css/style.css?v=20261008-functions-wallpaper">
+  <link rel="stylesheet" href="css/style.css?v=20261008-offline-dark">
   
 </head>
 <body>
@@ -481,6 +481,15 @@
     updateDate();
     buildHome();
     applyDarkPreference();
+
+    // Register the offline app shell for installed PWA use.
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => reg.update())
+          .catch(() => {});
+      });
+    }
   </script>
 </body>
 </html>
