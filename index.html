@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-title" content="My Safari Favourites">
   <meta name="application-name" content="My Safari Favourites">
 <meta name="theme-color" content="#1260a0">
-  <link rel="stylesheet" href="css/style.css?v=20261007-root-bg">
+  <link rel="stylesheet" href="css/style.css?v=20261008-functions-wallpaper">
   
 </head>
 <body>
@@ -213,34 +213,30 @@
 
     async function exportBookmarks() {
       const now = new Date().toISOString();
-      let html = '<!DOCTYPE NETSCAPE-Bookmark-file-1>
-';
-      html += '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
-';
-      html += '<TITLE>My Safari Favourites</TITLE>
-<H1>My Safari Favourites</H1>
-<DL><p>
-';
-      Object.entries(BOOKMARKS).forEach(([folder, links]) => {
-        html += `    <DT><H3>${escapeHtml(folder)}</H3>
-<DL><p>
-`;
-        (Array.isArray(links) ? links : []).forEach(link => {
-          if (link && link.url) html += `        <DT><A HREF="${escapeHtml(link.url)}">${escapeHtml(link.title || link.url)}</A>
-`;
-        });
-        html += '    </DL><p>
-';
-      });
-      html += '</DL><p>
-';
+      let html = '<!DOCTYPE NETSCAPE-Bookmark-file-1>\n';
+      html += '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">\n';
+      html += '<TITLE>My Safari Favourites</TITLE>\n';
+      html += '<H1>My Safari Favourites</H1>\n';
+      html += '<DL><p>\n';
 
-      const fileName = `My-Safari-Favourites-${now.slice(0,10)}.html`;
+      Object.entries(BOOKMARKS).forEach(([folder, links]) => {
+        html += '    <DT><H3>' + escapeHtml(folder) + '</H3>\n';
+        html += '    <DL><p>\n';
+        (Array.isArray(links) ? links : []).forEach(link => {
+          if (link && link.url) {
+            html += '        <DT><A HREF="' + escapeHtml(link.url) + '">' +
+              escapeHtml(link.title || link.url) + '</A>\n';
+          }
+        });
+        html += '    </DL><p>\n';
+      });
+
+      html += '</DL><p>\n';
+
+      const fileName = 'My-Safari-Favourites-' + now.slice(0,10) + '.html';
       const file = new File([html], fileName, {type:'text/html'});
 
-      // iPhone/iPad: use the native Share Sheet so the exported bookmark
-      // file can be saved to Files or sent to another app.  This avoids
-      // opening the generated HTML in Quick Look as a preview.
+      // iPhone/iPad: use the native Share Sheet when supported.
       if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
         try {
           await navigator.share({
@@ -254,12 +250,13 @@
         }
       }
 
-      // Desktop/older browsers fallback: normal download.
+      // Fallback for browsers without file sharing.
       const blob = new Blob([html], {type:'text/html;charset=utf-8'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = fileName;
+      a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
       a.remove();
