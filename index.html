@@ -415,21 +415,23 @@
     function toggleDarkMode() {
       const view = document.getElementById('detailView');
       view.classList.toggle('dark-mode');
-      // Remember preference
       try {
         localStorage.setItem('fav-dark', view.classList.contains('dark-mode') ? '1' : '0');
       } catch(e) {}
     }
 
-    // Restore dark preference when opening a folder
+    // Apply the saved link-page theme before opening a folder.
+    // Default is dark mode for the link pages.
     function applyDarkPreference() {
       try {
-        if (localStorage.getItem('fav-dark') === '1') {
-          document.getElementById('detailView').classList.add('dark-mode');
-        }
-      } catch(e) {}
+        const saved = localStorage.getItem('fav-dark');
+        document.getElementById('detailView').classList.toggle(
+          'dark-mode', saved !== '0'
+        );
+      } catch(e) {
+        document.getElementById('detailView').classList.add('dark-mode');
+      }
     }
-
     // Date + dynamic wallpaper based on local solar time.
     function updateDate() {
       const now = new Date();
