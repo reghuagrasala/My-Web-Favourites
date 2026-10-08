@@ -69,6 +69,7 @@
 
     // ===== IMPORT / REFRESH / EXPORT =====
     const BOOKMARK_STORAGE_KEY = 'my-safari-favourites-v4';
+    const HOME_BOOKMARKS_KEY = '__HOME_BOOKMARKS__';
 
     function saveBookmarksLocally() {
       try { localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(BOOKMARKS)); } catch(e) {}
@@ -112,6 +113,7 @@
       if (!root) throw new Error('No bookmark list found');
 
       const result = {};
+      const homeLinks = [];
       function walk(dl) {
         // Only inspect direct DT children at each level, preserving folder hierarchy.
         for (const dt of Array.from(dl.children).filter(el => el.tagName === 'DT')) {
@@ -154,18 +156,13 @@
               }
             }
           } else if (a && a.href) {
-            // Root-level links are placed in one explicit folder.
-            const rootName = Object.keys(result).length ? Object.keys(result)[0] : uniqueFolderName('Bookmarks', result);
-            if (!result[rootName]) result[rootName] = [];
-            result[rootName].push({
-              title: a.textContent.trim() || a.href,
-              url: a.href
-            });
+            homeLinks.push({ title: a.textContent.trim() || a.href, url: a.href });
           }
         }
       }
 
       walk(root);
+      if (homeLinks.length) result[HOME_BOOKMARKS_KEY] = homeLinks;
 
       if (!Object.keys(result).length) throw new Error('No bookmarks found');
       return result;
