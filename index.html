@@ -263,34 +263,153 @@
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
-    // High-quality site icon + page-preview fallback.
+    // Smart favicon system:
+    // 1) Prefer a real favicon discovered by Favicon.so.
+    // 2) Reject Favicon.so's generic/default icon.
+    // 3) Try the site's own high-resolution icons.
+    // 4) Use several independent favicon services.
+    // 5) If no real icon is available, show a letter — never a globe placeholder.
+    const FAVICON_CACHE_KEY = 'my-safari-favicon-cache-v2';
+    const faviconCache = {};
+
+    function loadFaviconCache() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(FAVICON_CACHE_KEY) || '{}');
+        if (saved && typeof saved === 'object') Object.assign(faviconCache, saved);
+      } catch(e) {}
+    }
+
+    function saveFaviconCache() {
+      try { localStorage.setItem(FAVICON_CACHE_KEY, JSON.stringify(faviconCache)); } catch(e) {}
+    }
+
+    loadFaviconCache();
+
     function getHostname(url) {
-      try { return new URL(url).hostname.replace(/^www\./, ''); }
+      try { return new URL(url).hostname.replace(/^www\./, '').toLowerCase(); }
       catch(e) { return ''; }
     }
 
-    function imageSources(url) {
-      const host = getHostname(url);
-      if (!host) return [];
+    function faviconCandidates(host) {
       return [
-        `https://www.google.com/s2/favicons?domain=${host}&sz=128`,
-        `https://icons.duckduckgo.com/ip3/${host}.ico`,
-        `https://favicon.yandex.net/favicon/${host}`,
+        `https://${host}/apple-touch-icon.png`,
+        `https://${host}/apple-touch-icon-precomposed.png`,
+        `https://${host}/favicon.svg`,
+        `https://${host}/favicon.png`,
         `https://${host}/favicon.ico`,
-        `https://${host}/apple-touch-icon.png`
+        `https://favicon.run/favicon?domain=${encodeURIComponent(host)}&sz=128`,
+        `https://icon.horse/icon/${encodeURIComponent(host)}`,
+        `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=128`,
+        `https://icons.duckduckgo.com/ip3/${host}.ico`,
+        `https://favicon.yandex.net/favicon/${host}`
       ];
     }
 
     function makeFaviconImg(url) {
-      const sources = imageSources(url);
-      const letter = firstLetter(getHostname(url) || url);
-      if (!sources.length) return `<span class="fallback-letter">${letter}</span>`;
-      const fallbackJs = `this.style.display='none';var n=this.nextElementSibling;if(n)n.style.display='flex';`;
-      let onerr = fallbackJs;
-      for (let i = sources.length - 1; i >= 1; i--) {
-        onerr = `this.onerror=null;this.src='${sources[i]}';this.onerror=function(){${onerr}};`;
+      const host = getHostname(url);
+      const letter = firstLetter(host || url);
+      if (!host) return `<span class="fallback-letter">${letter}</span>`;
+
+      return `
+        <img class="site-favicon"
+          src=""
+          alt=""
+          loading="lazy"
+          decoding="async"
+          referrerpolicy="no-referrer"
+          data-favicon-host="${escapeHtml(host)}"
+          data-favicon-url="${escapeHtml(url)}">
+        <span class="fallback-letter">${letter}</span>
+      `;
+    }
+
+    async function verifyFaviconSo(host) {
+      try {
+        const response = await fetch(
+          `https://favicon.so/api/favicon?url=${encodeURIComponent(host)}&raw=true`,
+          { cache: 'force-cache' }
+        );
+        if (!response.ok) return null;
+        const data = await response.json();
+        if (data && data.isDefault === false && data.url) return data.url;
+      } catch(e) {}
+      return null;
+    }
+
+    function tryFaviconSource(img, sources, index, host, fallback) {
+      if (!img || !img.isConnected) return;
+      if (index >= sources.length) {
+        img.style.display = 'none';
+        if (fallback) fallback.style.display = 'flex';
+        faviconCache[host] = { source: '', time: Date.now() };
+        saveFaviconCache();
+        return;
       }
-      return `<img src="${sources[0]}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="${onerr}" onload="this.classList.add('loaded')"><span class="fallback-letter" style="display:none">${letter}</span>`;
+
+      img.onerror = () => {
+        img.onerror = null;
+        tryFaviconSource(img, sources, index + 1, host, fallback);
+      };
+
+      img.onload = () => {
+        img.classList.add('loaded');
+        if (fallback) fallback.style.display = 'none';
+        faviconCache[host] = { source: img.src, time: Date.now() };
+        saveFaviconCache();
+      };
+
+      img.src = sources[index];
+    }
+
+    async function upgradeOneFavicon(img) {
+      if (!img || !img.dataset.faviconHost) return;
+      const host = img.dataset.faviconHost;
+      const fallback = img.nextElementSibling;
+      const cached = faviconCache[host];
+      const fresh = cached && (Date.now() - cached.time < 7 * 86400000);
+
+      // A previously verified real icon is used immediately.
+      if (fresh && cached.source) {
+        img.src = cached.source;
+        img.onload = () => {
+          img.classList.add('loaded');
+          if (fallback) fallback.style.display = 'none';
+        };
+        img.onerror = () => {
+          delete faviconCache[host];
+          saveFaviconCache();
+          upgradeOneFavicon(img);
+        };
+        return;
+      }
+
+      // Ask Favicon.so for metadata first. Its isDefault flag lets us
+      // explicitly reject generic globe/default icons.
+      const best = await verifyFaviconSo(host);
+      if (best) {
+        img.onload = () => {
+          img.classList.add('loaded');
+          if (fallback) fallback.style.display = 'none';
+          faviconCache[host] = { source: best, time: Date.now() };
+          saveFaviconCache();
+        };
+        img.onerror = () => {
+          img.onerror = null;
+          tryFaviconSource(img, faviconCandidates(host), 0, host, fallback);
+        };
+        img.src = best;
+        return;
+      }
+
+      // Favicon.so found only a generic/default result. Try genuine site
+      // assets and independent services before falling back to a letter.
+      tryFaviconSource(img, faviconCandidates(host), 0, host, fallback);
+    }
+
+    function upgradeFavicons(root) {
+      (root || document).querySelectorAll('img.site-favicon[data-favicon-host]').forEach(img => {
+        upgradeOneFavicon(img);
+      });
     }
 
     function firstLetter(title) {
@@ -338,6 +457,7 @@
         `;
         grid.appendChild(tile);
       });
+      upgradeFavicons(grid);
     }
 
     // Normal HTTPS navigation only. No app-specific URL schemes are used.
@@ -401,6 +521,7 @@
         `;
         grid.appendChild(tile);
       });
+      upgradeFavicons(grid);
       window.scrollTo(0, 0);
     }
 
